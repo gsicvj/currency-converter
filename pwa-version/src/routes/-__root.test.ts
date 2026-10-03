@@ -21,11 +21,25 @@ describe("root route head", () => {
   it("includes Umami analytics from env configuration", async () => {
     vi.stubEnv("VITE_UMAMI_SCRIPT_URL", "https://umami.example.test/script.js");
     vi.stubEnv("VITE_UMAMI_WEBSITE_ID", "test-website-id");
+    vi.stubEnv("VITE_UMAMI_DOMAINS", "");
 
     expect(await getHeadScripts()).toContainEqual({
       defer: true,
       src: "https://umami.example.test/script.js",
       "data-website-id": "test-website-id",
+    });
+  });
+
+  it("limits Umami tracking to configured domains", async () => {
+    vi.stubEnv("VITE_UMAMI_SCRIPT_URL", "https://umami.example.test/script.js");
+    vi.stubEnv("VITE_UMAMI_WEBSITE_ID", "test-website-id");
+    vi.stubEnv("VITE_UMAMI_DOMAINS", "app.example.test");
+
+    expect(await getHeadScripts()).toContainEqual({
+      defer: true,
+      src: "https://umami.example.test/script.js",
+      "data-website-id": "test-website-id",
+      "data-domains": "app.example.test",
     });
   });
 });

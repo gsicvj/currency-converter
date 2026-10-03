@@ -55,6 +55,8 @@ your own Umami instance:
 ```bash
 VITE_UMAMI_SCRIPT_URL=https://your-umami-host/script.js
 VITE_UMAMI_WEBSITE_ID=your-website-id
+# Optional: record only on these comma-separated hostnames
+VITE_UMAMI_DOMAINS=your-app.example.com
 ```
 
 The values are read at build time, so set them in your hosting provider's

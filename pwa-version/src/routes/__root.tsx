@@ -31,12 +31,21 @@ const persistOptions = {
 };
 
 // Umami loads only when both env vars are set, so forks send no analytics
-// unless they point the app at their own Umami instance.
+// unless they point the app at their own Umami instance. Optional domains
+// stop the script from recording on hosts other than the deployer's own.
 function getAnalyticsScripts() {
   const src = import.meta.env.VITE_UMAMI_SCRIPT_URL;
   const websiteId = import.meta.env.VITE_UMAMI_WEBSITE_ID;
+  const domains = import.meta.env.VITE_UMAMI_DOMAINS;
   if (!src || !websiteId) return [];
-  return [{ defer: true, src, "data-website-id": websiteId }];
+  return [
+    {
+      defer: true,
+      src,
+      "data-website-id": websiteId,
+      ...(domains ? { "data-domains": domains } : {}),
+    },
+  ];
 }
 
 export const Route = createRootRoute({
