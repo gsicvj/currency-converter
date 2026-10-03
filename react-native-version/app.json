@@ -1,0 +1,24 @@
+{
+  "expo": {
+    "name": "Currency App",
+    "slug": "currency-app-rn",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#1f2937"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.currencyapp.rn"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#1f2937"
+      },
+      "package": "com.currencyapp.rn"
+    }
+  }
+}

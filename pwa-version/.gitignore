@@ -1,0 +1,67 @@
+node_modules
+dist
+.vinxi
+.DS_Store
+*.log
+.env
+.env.local
+src/routeTree.gen.ts
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+node_modules
+/.pnp
+.pnp.js
+
+# lockfiles
+package-lock.json
+yarn.lock
+
+# testing
+/coverage
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+# build
+/out/
+/dist/
+/output/
+/.output
+/output
+/nitro
+/.nitro
+
+# production
+/build
+/build/
+/api/
+/server/build
+/public/build
+
+# misc
+.DS_Store
+.cache
+.tanstack
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# local env files
+.env
+.env*
+!.env.example
+.env*.local
+.env.sentry-build-plugin
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo

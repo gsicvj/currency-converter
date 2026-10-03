@@ -1,0 +1,29 @@
+# Local agent/tooling metadata
+.agents/
+.claude/
+.codex/
+!AGENTS.md
+
+# Package manager local stores
+.pnpm-store/
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.output/
+output/
+build/
+web-build/
+
+# Logs and local environment
+*.log
+.env
+.env.*
+!.env.example
+
+# OS/editor
+.DS_Store
+*.swp
+*.swo

@@ -1,0 +1,121 @@
+@import "@fontsource-variable/open-sans";
+@import "tailwindcss";
+
+@theme {
+  --font-opensans: "Open Sans", sans-serif;
+
+  /* Dark teal neutrals and accents taken from the logo gradient
+     (#72cd75 to #077d99) and its glyph (#132227). Teal is lifted from
+     #077d99 so it stays readable on the dark surfaces. */
+  --color-canvas: #0a1315;
+  --color-surface: #0f1b1e;
+  --color-raised: #15252a;
+  --color-raised-hover: #1d3238;
+  --color-line: #20363c;
+  --color-muted: #86a0a5;
+  --color-accent: #72cd75;
+  --color-teal: #2fb3c4;
+  --color-ink: #132227;
+
+  /* Enter motion decelerates like a native sheet; exits are short and
+     accelerate away. Use with motion-safe: so reduced motion skips them. */
+  --ease-sheet: cubic-bezier(0.32, 0.72, 0, 1);
+  --animate-fade-in: fade-in 200ms ease-out both;
+  --animate-fade-out: fade-out 180ms ease-in both;
+  --animate-sheet-in: sheet-in 320ms var(--ease-sheet) both;
+  --animate-sheet-out: sheet-out 200ms ease-in both;
+  --animate-dialog-in: dialog-in 220ms var(--ease-sheet) both;
+  --animate-dialog-out: dialog-out 160ms ease-in both;
+  --animate-rise-in: rise-in 240ms var(--ease-sheet) both;
+  --animate-row-in: row-in 220ms ease-out both;
+  --animate-grow-y: grow-y 200ms var(--ease-sheet) both;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @keyframes fade-out {
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes sheet-in {
+    from {
+      transform: translateY(100%);
+    }
+  }
+
+  @keyframes sheet-out {
+    to {
+      transform: translateY(100%);
+    }
+  }
+
+  @keyframes dialog-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px) scale(0.97);
+    }
+  }
+
+  @keyframes dialog-out {
+    to {
+      opacity: 0;
+      transform: scale(0.97);
+    }
+  }
+
+  @keyframes rise-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+  }
+
+  @keyframes row-in {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+  }
+
+  @keyframes grow-y {
+    from {
+      transform: scaleY(0);
+    }
+  }
+}
+
+@layer base {
+  /* The app is a fixed-height shell with its own scroll regions. Locking the
+     document stops mobile swipes from scrolling or rubber-banding the page,
+     which would push the keypad below the viewport. */
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+      "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+      sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  button {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
