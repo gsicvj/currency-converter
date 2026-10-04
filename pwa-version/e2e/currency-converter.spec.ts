@@ -520,6 +520,46 @@ test("hides the keypad on desktop viewports", async ({ page }) => {
   ).toBeLessThan(4);
 });
 
+test("offers clear, delete and swap buttons when the keypad is hidden on desktop", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await gotoConverter(page);
+
+  const eurAmount = page.locator("input").nth(3);
+  await expect(eurAmount).toHaveValue("1");
+  await expect(page.getByLabel("Currency keypad")).toBeHidden();
+
+  const actions = page.getByRole("group", { name: "Amount actions" });
+  await expect(actions).toBeVisible();
+
+  await page.keyboard.press("c");
+  for (const key of ["1", "2", "5"]) {
+    await page.keyboard.press(key);
+  }
+  await expect(eurAmount).toHaveValue("125");
+
+  await actions.getByRole("button", { name: "Delete last digit" }).click();
+  await expect(eurAmount).toHaveValue("12");
+
+  await actions.getByRole("button", { name: "Clear amount" }).click();
+  await expect(eurAmount).toHaveValue("0");
+
+  await expect(
+    actions.getByRole("button", { name: "Swap selected currency" }),
+  ).toBeVisible();
+});
+
+test("hides the desktop amount actions while the keypad is shown", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await gotoConverter(page);
+
+  await expect(page.getByLabel("Currency keypad")).toBeVisible();
+  await expect(page.getByRole("group", { name: "Amount actions" })).toBeHidden();
+});
+
 test("keeps the desktop amount cursor where the input is clicked", async ({
   page,
 }) => {

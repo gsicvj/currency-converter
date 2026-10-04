@@ -4,6 +4,7 @@ import { useSupportedCurrencies } from "~/utils/supportedCurrencies";
 import { useAmountEntry } from "~/hooks/useAmountEntry";
 import { useCurrencyState } from "~/hooks/useCurrencyState";
 import { useExchangeRateStatus } from "~/hooks/useExchangeRateStatus";
+import { AmountActions } from "./converter/AmountActions";
 import { ConverterHeader } from "./converter/ConverterHeader";
 import { CurrencyList } from "./converter/CurrencyList";
 import { Keypad } from "./converter/Keypad";
@@ -88,6 +89,7 @@ export function CurrencyConverter() {
             />
           ) : null}
         </PullToRefresh>
+        <AmountActions onInput={amounts.handleKeypadInput} />
         <Keypad onInput={amounts.handleKeypadInput} />
       </main>
       {isEditorOpen ? (
