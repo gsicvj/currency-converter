@@ -4,11 +4,13 @@ import { useSupportedCurrencies } from "~/utils/supportedCurrencies";
 import { useAmountEntry } from "~/hooks/useAmountEntry";
 import { useCurrencyState } from "~/hooks/useCurrencyState";
 import { useExchangeRateStatus } from "~/hooks/useExchangeRateStatus";
+import { useRateHistoryPreload } from "~/hooks/useRateHistoryPreload";
 import { AmountActions } from "./converter/AmountActions";
 import { ConverterHeader } from "./converter/ConverterHeader";
 import { CurrencyList } from "./converter/CurrencyList";
 import { Keypad } from "./converter/Keypad";
 import { CurrencyEditorSheet } from "./editor/CurrencyEditorSheet";
+import { RateHistorySheet } from "./history/RateHistorySheet";
 import { PullToRefresh } from "./PullToRefresh";
 import { UndoToast } from "./ui/UndoToast";
 
@@ -17,6 +19,7 @@ import { UndoToast } from "./ui/UndoToast";
 // and useAmountEntry (typed amounts and conversion).
 export function CurrencyConverter() {
   const [isEditorOpen, setIsEditorOpen] = useState(false);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const {
     data: supportedCurrencies = CURRENCIES,
     isLoading: areSupportedCurrenciesLoading,
@@ -27,13 +30,20 @@ export function CurrencyConverter() {
     activeCurrencies: currencies.activeCurrencies,
     rates: rates.rates,
     selectedCode: currencies.selectedCode,
-    isKeyboardEnabled: !isEditorOpen,
+    isKeyboardEnabled: !isEditorOpen && !isHistoryOpen,
     onSelect: currencies.selectCurrency,
     onSwap: currencies.swapCurrency,
   });
+  // Waits for the rates so history never delays the converter itself.
+  useRateHistoryPreload(
+    currencies.activeCodes,
+    currencies.arePreferencesReady && Boolean(rates.rates),
+  );
 
   const openEditor = useCallback(() => setIsEditorOpen(true), []);
   const closeEditor = useCallback(() => setIsEditorOpen(false), []);
+  const openHistory = useCallback(() => setIsHistoryOpen(true), []);
+  const closeHistory = useCallback(() => setIsHistoryOpen(false), []);
 
   const { lastRemoved } = currencies;
   const undoToast = lastRemoved ? (
@@ -71,6 +81,7 @@ export function CurrencyConverter() {
           isRefreshing={rates.isRefreshing}
           status={rates.status}
           onEdit={openEditor}
+          onOpenHistory={openHistory}
           onRefresh={rates.refresh}
         />
         <PullToRefresh
@@ -107,6 +118,13 @@ export function CurrencyConverter() {
       ) : (
         undoToast
       )}
+      {isHistoryOpen ? (
+        <RateHistorySheet
+          currencies={currencies.activeCurrencies}
+          initialBase={currencies.selectedCode}
+          onClose={closeHistory}
+        />
+      ) : null}
     </div>
   );
 }

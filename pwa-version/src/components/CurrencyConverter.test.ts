@@ -42,6 +42,11 @@ vi.mock("~/utils/exchangeRates", () => ({
   useRefreshExchangeRates: () => vi.fn(),
 }));
 
+// History preloading runs in the browser and needs a QueryClient.
+vi.mock("~/hooks/useRateHistoryPreload", () => ({
+  useRateHistoryPreload: () => {},
+}));
+
 vi.mock("~/utils/supportedCurrencies", () => ({
   useSupportedCurrencies: () => ({
     data: [

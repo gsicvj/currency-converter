@@ -17,6 +17,20 @@ export function useCloseSheet() {
   return useContext(SheetCloseContext);
 }
 
+export function SheetDoneButton() {
+  const closeSheet = useCloseSheet();
+
+  return (
+    <button
+      type="button"
+      onClick={closeSheet}
+      className="rounded-lg px-3 py-2 text-sm font-semibold text-accent transition-colors hover:bg-raised"
+    >
+      Done
+    </button>
+  );
+}
+
 function prefersReducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }

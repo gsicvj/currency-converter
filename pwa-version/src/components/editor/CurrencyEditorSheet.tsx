@@ -2,7 +2,7 @@ import { useCallback, useDeferredValue, useMemo, useRef, useState } from "react"
 import type { ReactNode } from "react";
 import { Search, X } from "lucide-react";
 import type { Currency } from "~/utils/currencies";
-import { Sheet, useCloseSheet } from "../ui/Sheet";
+import { Sheet, SheetDoneButton } from "../ui/Sheet";
 import { ActiveCurrencyList } from "./ActiveCurrencyList";
 import { CurrencyOptionList } from "./CurrencyOptionList";
 
@@ -18,20 +18,6 @@ function matchesSearch(currency: Currency, query: string) {
 // list on touch devices, so only fine pointers get autofocus.
 function prefersSearchFocus() {
   return window.matchMedia("(pointer: fine)").matches;
-}
-
-function DoneButton() {
-  const closeSheet = useCloseSheet();
-
-  return (
-    <button
-      type="button"
-      onClick={closeSheet}
-      className="rounded-lg px-3 py-2 text-sm font-semibold text-accent transition-colors hover:bg-raised"
-    >
-      Done
-    </button>
-  );
 }
 
 function Section({
@@ -126,7 +112,7 @@ export function CurrencyEditorSheet({
         <h2 id="currency-editor-title" className="text-base font-semibold">
           Edit currencies
         </h2>
-        <DoneButton />
+        <SheetDoneButton />
       </div>
 
       <div className="shrink-0 px-4 pb-3">

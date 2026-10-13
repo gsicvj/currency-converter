@@ -4,7 +4,11 @@ import type { Query } from "@tanstack/react-query";
 export const QUERY_CACHE_STORAGE_KEY = "currency-app:query-cache:v1";
 export const QUERY_CACHE_MAX_AGE = 1000 * 60 * 60 * 24 * 7; // 7 days
 
-const PERSISTED_QUERY_KEYS = new Set(["exchangeRates", "supportedCurrencies"]);
+const PERSISTED_QUERY_KEYS = new Set([
+  "exchangeRates",
+  "rateHistory",
+  "supportedCurrencies",
+]);
 
 type QueryStorage = Pick<Storage, "getItem" | "setItem" | "removeItem">;
 

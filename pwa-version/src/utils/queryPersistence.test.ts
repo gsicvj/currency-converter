@@ -28,16 +28,20 @@ function getQuery(queryClient: QueryClient, queryKey: unknown[]) {
 }
 
 describe("shouldPersistQuery", () => {
-  it("persists successful currency and exchange rate queries", () => {
+  it("persists successful currency, exchange rate and history queries", () => {
     const queryClient = new QueryClient();
     queryClient.setQueryData(["supportedCurrencies"], []);
     queryClient.setQueryData(["exchangeRates", ["USD"]], { EUR: 1, USD: 1.1 });
+    queryClient.setQueryData(["rateHistory", "USD", "1Y"], []);
 
     expect(
       shouldPersistQuery(getQuery(queryClient, ["supportedCurrencies"])),
     ).toBe(true);
     expect(
       shouldPersistQuery(getQuery(queryClient, ["exchangeRates", ["USD"]])),
+    ).toBe(true);
+    expect(
+      shouldPersistQuery(getQuery(queryClient, ["rateHistory", "USD", "1Y"])),
     ).toBe(true);
   });
 

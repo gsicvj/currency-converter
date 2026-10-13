@@ -1,5 +1,5 @@
 import { memo, type Ref } from "react";
-import { RefreshCw, SlidersHorizontal } from "lucide-react";
+import { ChartLine, RefreshCw, SlidersHorizontal } from "lucide-react";
 import { AppLogo } from "~/components/ui/AppLogo";
 
 interface ConverterHeaderProps {
@@ -7,6 +7,7 @@ interface ConverterHeaderProps {
   isRefreshing: boolean;
   status: string;
   onEdit: () => void;
+  onOpenHistory: () => void;
   onRefresh: () => void;
 }
 
@@ -15,12 +16,26 @@ export const ConverterHeader = memo(function ConverterHeader({
   isRefreshing,
   status,
   onEdit,
+  onOpenHistory,
   onRefresh,
 }: ConverterHeaderProps) {
   return (
     // Equal side columns keep the status centred on the header itself.
     <header className="grid h-12 shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-2 px-3">
-      <AppLogo className="size-6 shrink-0" />
+      {/* The history button sits by the logo so both side columns stay
+          narrow enough to keep the status centred on phones. */}
+      <div className="flex min-w-0 items-center gap-2">
+        <AppLogo className="size-6 shrink-0" />
+        <button
+          type="button"
+          aria-label="Rate history"
+          title="Rate history"
+          onClick={onOpenHistory}
+          className="inline-flex size-8 shrink-0 items-center justify-center rounded-lg text-accent transition-colors hover:bg-raised"
+        >
+          <ChartLine size={16} />
+        </button>
+      </div>
       {/* px-8 reserves room for the refresh button on both sides, so the
           button can hang off the text without pulling it off centre. */}
       <div className="flex min-w-0 justify-center px-8 text-xs text-muted">
