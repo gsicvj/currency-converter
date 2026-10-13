@@ -1,5 +1,5 @@
 import { memo, type Ref } from "react";
-import { ChartLine, RefreshCw, SlidersHorizontal } from "lucide-react";
+import { ChartNoAxesCombined, RefreshCw, SlidersHorizontal } from "lucide-react";
 import { AppLogo } from "~/components/ui/AppLogo";
 
 interface ConverterHeaderProps {
@@ -33,7 +33,7 @@ export const ConverterHeader = memo(function ConverterHeader({
           onClick={onOpenHistory}
           className="inline-flex size-8 shrink-0 items-center justify-center rounded-lg text-accent transition-colors hover:bg-raised"
         >
-          <ChartLine size={16} />
+          <ChartNoAxesCombined size={16} />
         </button>
       </div>
       {/* px-8 reserves room for the refresh button on both sides, so the
