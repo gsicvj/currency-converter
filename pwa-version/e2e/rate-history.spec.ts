@@ -110,7 +110,10 @@ test("charts the selected currency against the next active currency", async ({
   await mockRateHistory(page);
   await gotoConverter(page);
 
-  await page.getByRole("button", { name: "Rate history" }).click();
+  await page
+    .getByRole("button", { name: "Charts", exact: true })
+    .getByText("Charts", { exact: true })
+    .click();
 
   const dialog = page.getByRole("dialog", { name: "Rate history" });
   await expect(dialog).toBeVisible();
@@ -131,7 +134,7 @@ test("switches the range, compared currency and direction", async ({
 }) => {
   const history = await mockRateHistory(page);
   await gotoConverter(page);
-  await page.getByRole("button", { name: "Rate history" }).click();
+  await page.getByRole("button", { name: "Charts", exact: true }).click();
   const dialog = page.getByRole("dialog", { name: "Rate history" });
   await expect(dialog.getByText("+3.57%")).toBeVisible();
 
@@ -168,7 +171,7 @@ test("offers a retry when rate history is unavailable", async ({ page }) => {
   const history = await mockRateHistory(page);
   history.failing = true;
   await gotoConverter(page);
-  await page.getByRole("button", { name: "Rate history" }).click();
+  await page.getByRole("button", { name: "Charts", exact: true }).click();
   const dialog = page.getByRole("dialog", { name: "Rate history" });
 
   await expect(dialog.getByText("Couldn't load rate history")).toBeVisible();
@@ -187,7 +190,7 @@ test("keeps amount keys away from the converter while open", async ({
   const eurAmount = page.getByRole("textbox", { name: "EUR amount" });
   await expect(eurAmount).toHaveValue("1");
 
-  const historyButton = page.getByRole("button", { name: "Rate history" });
+  const historyButton = page.getByRole("button", { name: "Charts", exact: true });
   await historyButton.click();
   const dialog = page.getByRole("dialog", { name: "Rate history" });
   await expect(dialog).toBeVisible();
@@ -213,7 +216,7 @@ test("preloads the chart and every active currency's history in the background",
     .toBe(true);
 
   const requestCount = history.requests.length;
-  await page.getByRole("button", { name: "Rate history" }).click();
+  await page.getByRole("button", { name: "Charts", exact: true }).click();
   const dialog = page.getByRole("dialog", { name: "Rate history" });
   await expect(dialog.getByText("1 EUR = 1,450 KRW")).toBeVisible();
   await dialog.getByRole("button", { name: "5Y" }).click();
@@ -254,7 +257,7 @@ test("shows cached history offline on the next app load", async ({
 
   await nextPage.goto("/");
   await expect(nextPage.getByText(/^Updated /)).toBeVisible();
-  await nextPage.getByRole("button", { name: "Rate history" }).click();
+  await nextPage.getByRole("button", { name: "Charts", exact: true }).click();
   const dialog = nextPage.getByRole("dialog", { name: "Rate history" });
   await expect(dialog.getByText("1 EUR = 1,450 KRW")).toBeVisible();
   expect(apiRequests).toEqual([]);

@@ -28,12 +28,12 @@ export const ConverterHeader = memo(function ConverterHeader({
         <AppLogo className="size-6 shrink-0" />
         <button
           type="button"
-          aria-label="Rate history"
           title="Rate history"
           onClick={onOpenHistory}
-          className="inline-flex size-8 shrink-0 items-center justify-center rounded-lg text-accent transition-colors hover:bg-raised"
+          className="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-lg px-2.5 text-sm font-medium text-accent transition-colors hover:bg-raised"
         >
           <ChartNoAxesCombined size={16} />
+          Charts
         </button>
       </div>
       {/* px-8 reserves room for the refresh button on both sides, so the
