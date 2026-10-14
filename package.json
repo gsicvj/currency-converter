@@ -10,6 +10,7 @@
     "start": "node .output/server/index.mjs",
     "lint": "eslint .",
     "test": "vitest run --config vitest.config.ts",
+    "test:scripts": "node --test \"scripts/*.test.mjs\"",
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:install": "playwright install chromium",

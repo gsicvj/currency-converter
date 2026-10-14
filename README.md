@@ -61,6 +61,7 @@ pnpm start      # serves .output/server/index.mjs
 | `pnpm lint` | Run ESLint |
 | `pnpm typecheck` | Run the TypeScript compiler without output |
 | `pnpm test` | Run the Vitest unit tests |
+| `pnpm test:scripts` | Run the Node tests for `scripts/` |
 | `pnpm test:e2e` | Run the Playwright tests |
 | `pnpm test:e2e:install` | Install the Playwright Chromium browser |
 
@@ -102,13 +103,29 @@ VITE_UMAMI_DOMAINS=your-app.example.com
 The values are read at build time, so set them in your hosting provider's
 environment variables before building.
 
+## Deployment
+
+Vercel deploys every push to `main`. The
+`.github/workflows/discord-deployment.yml` workflow posts the pipeline to a
+Discord channel:
+
+- On push: build started, deployment started, then the result of a GitHub
+  Actions build of the same commit.
+- When Vercel reports the production deployment: deployment finished or
+  failed.
+
+Set the Discord incoming webhook URL as the `DISCORD_WEBHOOK_URL` Actions
+secret. Without it, the workflow skips the notifications.
+
 ## Project Structure
 
 ```
 currency-converter/
+├── .github/workflows/      # Discord deployment notifications
 ├── e2e/                    # Playwright tests
 ├── public/                 # Icons and web app manifest
 ├── scripts/
+│   ├── discord-build-start.mjs # Builds the "Build started" Discord message
 │   └── serviceWorkerPlugin.ts  # Generates the service worker at build time
 ├── src/
 │   ├── components/

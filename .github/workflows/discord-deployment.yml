@@ -1,0 +1,156 @@
+name: Discord Deployment
+
+on:
+  push:
+    branches: [main]
+  deployment_status:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  build:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-26.04
+    env:
+      PROJECT: ${{ github.event.repository.name }}
+      WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 26
+
+      - name: Find last successful build
+        id: last-success
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          LAST_SUCCESS_SHA=$(gh run list \
+            --workflow discord-deployment.yml \
+            --branch "$GITHUB_REF_NAME" \
+            --event push \
+            --status success \
+            --limit 1 \
+            --json headSha \
+            --jq '.[0].headSha // ""' \
+            2>/dev/null || true)
+          echo "sha=$LAST_SUCCESS_SHA" >> "$GITHUB_OUTPUT"
+
+      - name: Notify Discord pipeline started
+        if: env.WEBHOOK_URL != ''
+        env:
+          LAST_SUCCESS_SHA: ${{ steps.last-success.outputs.sha }}
+        run: |
+          BUILD_PAYLOAD=$(node scripts/discord-build-start.mjs)
+          curl --fail --show-error --silent \
+            -H "Content-Type: application/json" \
+            -d "$BUILD_PAYLOAD" \
+            "$WEBHOOK_URL" || echo "Discord notification failed (non-fatal)"
+
+          DEPLOY_PAYLOAD=$(jq -n \
+            --arg project "$PROJECT" \
+            '{
+              embeds: [{
+                title: "🚀 Deployment started",
+                description: "Vercel is processing this production commit.",
+                color: 3447003,
+                fields: [{name: "Project", value: $project, inline: true}]
+              }]
+            }')
+          curl --fail --show-error --silent \
+            -H "Content-Type: application/json" \
+            -d "$DEPLOY_PAYLOAD" \
+            "$WEBHOOK_URL" || echo "Discord notification failed (non-fatal)"
+
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 12.9.1
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+
+      - name: Notify Discord build result
+        if: always() && env.WEBHOOK_URL != ''
+        env:
+          STATE: ${{ job.status }}
+        run: |
+          if [ "$STATE" = "success" ]; then
+            TITLE="✅ Build finished"
+            DESCRIPTION="GitHub verified the production build."
+            COLOR=5763719
+          else
+            TITLE="❌ Build failed"
+            DESCRIPTION="GitHub could not build this production commit."
+            COLOR=15548997
+          fi
+
+          PAYLOAD=$(jq -n \
+            --arg title "$TITLE" \
+            --arg description "$DESCRIPTION" \
+            --argjson color "$COLOR" \
+            --arg project "$PROJECT" \
+            '{
+              embeds: [{
+                title: $title,
+                description: $description,
+                color: $color,
+                fields: [{name: "Project", value: $project, inline: true}]
+              }]
+            }')
+
+          curl --fail --show-error --silent \
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD" \
+            "$WEBHOOK_URL" || echo "Discord notification failed (non-fatal)"
+
+  notify-deployment-result:
+    # Preview deployments from other branches stay out of the channel.
+    if: >-
+      github.event_name == 'deployment_status' &&
+      github.event.deployment.environment == 'Production' &&
+      (github.event.deployment_status.state == 'success' ||
+      github.event.deployment_status.state == 'failure' ||
+      github.event.deployment_status.state == 'error')
+    runs-on: ubuntu-26.04
+    env:
+      PROJECT: ${{ github.event.repository.name }}
+      WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+    steps:
+      - name: Notify Discord deployment result
+        if: env.WEBHOOK_URL != ''
+        env:
+          STATE: ${{ github.event.deployment_status.state }}
+          SITE_URL: https://currency.domenurh.com
+        run: |
+          if [ "$STATE" = "success" ]; then
+            TITLE="✅ Deployment finished"
+            COLOR=5763719
+          else
+            TITLE="❌ Deployment failed"
+            COLOR=15548997
+          fi
+
+          PAYLOAD=$(jq -n \
+            --arg title "$TITLE" \
+            --argjson color "$COLOR" \
+            --arg project "$PROJECT" \
+            --arg site_url "$SITE_URL" \
+            '{
+              embeds: [{
+                title: $title,
+                color: $color,
+                fields: [
+                  {name: "Project", value: $project, inline: true},
+                  {name: "URL", value: $site_url}
+                ]
+              }]
+            }')
+
+          curl --fail --show-error --silent \
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD" \
+            "$WEBHOOK_URL" || echo "Discord notification failed (non-fatal)"
